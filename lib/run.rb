@@ -3,4 +3,4 @@ require_relative '../bin/cli.rb'
 
 Cli.greet_user
 
-puts "HELLO WORLD"
+puts "Goodbye"

@@ -15,7 +15,8 @@ grrm = Author.create(name: "George RR Martin")
 wizards = Genre.create(genre: "Wizards")
 dragons = Genre.create(genre: "Dragons")
 
-ttu = Library.create(name: "Texas Tech Library")
+ttu = Library.create(name: "Texas Tech")
+pesh = Library.create(name: "Plano East")
 
 david = Student.create(name: "David", username: "dpolcari", password: "123", library_id: ttu.id)
 evan = Student.create(name: "Evan", username: "ebillings", password: "123", library_id: ttu.id)
