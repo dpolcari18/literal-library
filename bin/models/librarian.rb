@@ -10,4 +10,8 @@ class Librarian < ActiveRecord::Base
     def remove_book_from_library(title)
         Book.find_by(title: title).destroy
     end
+
+    def students_with_books_checked_out
+        self.library.students.select {|student| student.currently_checked_out_books.length != 0}.map {|student| [student.name, student.currently_checked_out_books.length]}
+    end
 end
