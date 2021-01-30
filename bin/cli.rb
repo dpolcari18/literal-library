@@ -27,13 +27,13 @@ class Cli
             when "Clocking In"
                 # Ask for username and make sure it is in system
                 username = @@prompt.ask("Please enter your username:", required: true)
-                librarian = Librarian.find_by(username: username)
-                if librarian
+                @@librarian = Librarian.find_by(username: username)
+                if @@librarian
                     # Ask for password and make sure it matches username
                     password = @@prompt.mask("Please enter your password:", required: true)
-                    if librarian.password == password && librarian.library_id == @@library.id
+                    if @@librarian.password == password && @@librarian.library_id == @@library.id
                         # Go to librarian interface
-                        puts "Welcome back to the #{@@library.name} library #{librarian.name}!"
+                        puts "Welcome back to the #{@@library.name} library #{@@librarian.name}!"
                         self.librarian_interface
                     end
                 end
@@ -42,8 +42,8 @@ class Cli
                 name = @@prompt.ask("Welcome to onboarding. What is your name?", required: true)
                 username = @@prompt.ask("Please create a username:", required: true)
                 password = @@prompt.ask("Please create a password:", required: true)
-                # uses class variabl @@library to input library id
-                Librarian.create(name: name, username: username, password: password, library_id: @@library.id)
+                # uses class variabl @@library to input library id and create Student instance
+                @@librarian = Librarian.create(name: name, username: username, password: password, library_id: @@library.id)
                 puts "We hope you have a great first day at the #{@@library.name} library, #{name}!"
                 self.librarian_interface
             end
@@ -69,9 +69,11 @@ class Cli
                     end
                 end
             when "New"
+                # input name, username, password
                 name = @@prompt.ask("Lets create an account for you.\n What is your name?", required: true)
                 username = @@prompt.ask("Please create a username:", required: true)
                 password = @@prompt.ask("Please create a password:", required: true)
+                # uses class variable @@library to input library id and create Student instance
                 Student.create(name: name, username: username, password: password, library_id: @@library.id)
                 puts "Thanks for signing up. Enjoy the #{@@library.name} library, #{name}."
                 self.student_interface
@@ -79,8 +81,31 @@ class Cli
     end
 
     def self.librarian_interface
-        # binding.pry
-        puts "You made it to the Librarian Interface!!!"
+        while true
+            command = @@prompt.select("What would you like to do?", ["See Available Books", "Add Book to Library", "Remove Book from Library", "See Students with Book(s) Checked Out", "Go Home for the Day"])
+            case command
+            when "See Available Books"
+                # binding.pry
+                Book.available_books.map {|title| puts title}
+            when "Add Book to Library"
+                puts "Ok lets add a book to the library! The students will loves this."
+                # must be string
+                title = @@prompt.ask("What is the title of this new book?", required: true)
+                author = @@prompt.select("What is the authors name?", Author.all.map{|author| author.name})
+                author_id = Author.find_by(name: author).id
+                genre = @@prompt.select("What is the genre of the book?", Genre.all.map{|genre| genre.genre})
+                genre_id = Genre.find_by(genre: genre).id
+                # must be integer
+                pages = @@prompt.ask("How many pages are in this book?", required: true)
+                @@librarian.add_book_to_library(title, author_id, @@library.id, genre_id, pages)
+                puts "Awesome! #{title} has been added to the #{@@library.name} library shelves for the students to enjoy."
+            when "Remove Book from Library"
+            when "See Students with Book(s) Checked Out"
+            when "Go Home for the Day"
+                puts "Ok have a great day #{@@librarian.name}!"
+                break
+            end
+        end
     end
 
     def self.student_interface

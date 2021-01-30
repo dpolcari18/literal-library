@@ -6,6 +6,6 @@ class Book < ActiveRecord::Base
     has_many :students, through: :checkouts
 
     def self.available_books
-        self.all.select {|book| book.available == true}.map{|title| title.title}
+        self.all.select {|book| book.available == true}.map{|title| title.title}.sort
     end
 end
