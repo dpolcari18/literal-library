@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_30_011845) do
+ActiveRecord::Schema.define(version: 2021_01_30_014731) do
 
   create_table "authors", force: :cascade do |t|
     t.string "name"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2021_01_30_011845) do
     t.integer "library_id"
     t.integer "genre_id"
     t.integer "author_id"
+    t.boolean "available", default: true
     t.index ["author_id"], name: "index_books_on_author_id"
     t.index ["genre_id"], name: "index_books_on_genre_id"
     t.index ["library_id"], name: "index_books_on_library_id"
