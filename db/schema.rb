@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_30_003934) do
+ActiveRecord::Schema.define(version: 2021_01_30_011845) do
 
   create_table "authors", force: :cascade do |t|
     t.string "name"
@@ -43,6 +43,8 @@ ActiveRecord::Schema.define(version: 2021_01_30_003934) do
   create_table "librarians", force: :cascade do |t|
     t.string "name"
     t.integer "library_id"
+    t.string "username"
+    t.string "password"
     t.index ["library_id"], name: "index_librarians_on_library_id"
   end
 
