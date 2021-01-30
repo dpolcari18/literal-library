@@ -86,7 +86,7 @@ class Cli
             case command
             when "See Available Books"
                 # binding.pry
-                Book.available_books.map {|title| puts title}
+                Book.available_books.select {|books| books.library_id == @@library.id}.map {|book| puts book.title}
             when "Add Book to Library"
                 puts "Ok lets add a book to the library! The students will loves this."
                 # must be string
@@ -100,6 +100,10 @@ class Cli
                 @@librarian.add_book_to_library(title, author_id, @@library.id, genre_id, pages)
                 puts "Awesome! #{title} has been added to the #{@@library.name} library shelves for the students to enjoy."
             when "Remove Book from Library"
+                puts "Ok, we're sorry you want to remove a book from our shelves."
+                title = @@prompt.select("What is the title of the book you would like to remove?", Book.available_books.map {|title| title})
+                @@librarian.remove_book_from_library(title)
+                puts "Sadly, this book has been removed from the library..."
             when "See Students with Book(s) Checked Out"
             when "Go Home for the Day"
                 puts "Ok have a great day #{@@librarian.name}!"
