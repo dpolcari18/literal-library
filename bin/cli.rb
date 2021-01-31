@@ -58,13 +58,13 @@ class Cli
             when "Returning"
                 # Ask for username and make sure it is in system
                 username = @@prompt.ask("Please enter your username:", required: true)
-                student = Student.find_by(username: username)
-                if student
+                @@student = Student.find_by(username: username)
+                if @@student
                     # Ask for password and make sure it matches username
                     password = @@prompt.mask("Please enter your password:", required: true)
-                    if student.password == password && student.library_id == @@library.id
+                    if @@student.password == password && @@student.library_id == @@library.id
                         # Go to Student interface
-                        puts "Welcome back to the #{@@library.name} library #{student.name}!"
+                        puts "Welcome back to the #{@@library.name} library #{@@student.name}!"
                         self.student_interface
                     end
                 end
@@ -74,7 +74,7 @@ class Cli
                 username = @@prompt.ask("Please create a username:", required: true)
                 password = @@prompt.ask("Please create a password:", required: true)
                 # uses class variable @@library to input library id and create Student instance
-                Student.create(name: name, username: username, password: password, library_id: @@library.id)
+                @@student = Student.create(name: name, username: username, password: password, library_id: @@library.id)
                 puts "Thanks for signing up. Enjoy the #{@@library.name} library, #{name}."
                 self.student_interface
             end
@@ -113,7 +113,25 @@ class Cli
     end
 
     def self.student_interface
-        # binding.pry
-        puts "You made it to the Student Interface!!!"
+        while true
+            command = @@prompt.select("What would you like to do?", ["See Available Books", "Search Available Books by Author", "Search Available Books by Genre", "Checkout Book", "See My Books", "Return Book", "Go Home for the Day"])
+            case command
+            when "See Available Books"
+                Book.available_books.map{|book| puts book.title}
+            when "Search Available Books by Author"
+            when "Search Available Books by Genre"
+            when "Checkout Book"
+                title = @@prompt.select("Which book would you like to checkout?", Book.available_books.map{|book| book.title})
+                @@student.checkout_book(title)
+            when "See My Books"
+                @@student.books.map{|book| puts book.title}
+            when "Return Book"
+                title = @@prompt.select("Which book would you like to return?", @@student.currently_checked_out_books.map {|title| title})   
+                @@student.return_book(title)
+            when "Go Home for the Day"
+                puts "Thanks for visiting the library! See you next time #{@@student.name}."
+                break
+            end
+        end
     end
 end
