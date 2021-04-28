@@ -122,6 +122,8 @@ class Cli
                 puts "\nOk lets add a book to the library! The students will loves this.\n"
                 # must be string
                 title = @@prompt.ask("\nWhat is the title of this new book?\n", required: true)
+                
+                # find or add author
                 author_prompt = @@prompt.select("\nWhat is the authors name?\n", [*Author.all.map{|author| author.name}, "Not on the List? Add a new author."])
                 if author_prompt == 'Not on the List? Add a new author.' 
                     author_name = @@prompt.ask("\nEnter a new authors name.\n", required: true)
@@ -130,13 +132,18 @@ class Cli
                     author = Author.find_by(name: author_prompt)
                 end
 
-                # author_id = Author.find_by(name: author).id
-                genre = @@prompt.select("\nWhat is the genre of the book?\n", Genre.all.map{|genre| genre.genre})
-                genre_id = Genre.find_by(genre: genre).id
+                # find or add genre
+                genre_prompt = @@prompt.select("\nWhat is the genre of the book?\n", [*Genre.all.map{|genre| genre.genre}, "Not on the list? Add a new genre."])
+                if genre_prompt == 'Not on the list? Add a new genre.'
+                    genre_name = @@prompt.ask("\nEnter a new genre.\n", require: true)
+                    genre = Genre.create(genre: genre_name)
+                else
+                    genre = Genre.find_by(genre: genre)
+                end
 
                 # must be integer
                 pages = @@prompt.ask("\nHow many pages are in this book?\n", required: true)
-                @@librarian.add_book_to_library(title, author.id, @@library.id, genre_id, pages)
+                @@librarian.add_book_to_library(title, author.id, @@library.id, genre.id, pages)
                 puts "\nAwesome! #{title} has been added to the #{@@library.name} library shelves for the students to enjoy.\n"
             when "Remove Book from Library"
                 puts "Ok, we're sorry you want to remove a book from our shelves."
