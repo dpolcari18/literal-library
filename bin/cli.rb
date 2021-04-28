@@ -1,5 +1,4 @@
 require 'tty-prompt'
-# require_all 'bin/models'
 
 class Cli
     @@prompt = TTY::Prompt.new
@@ -42,7 +41,15 @@ class Cli
                         # Go to librarian interface
                         puts "Welcome back to the #{@@library.name} library #{@@librarian.name}!"
                         self.librarian_interface
+                    else
+                        # Error handling if password doesn't match
+                        puts "Password does not match our records. Please try again."
+                        self.librarian_login
                     end
+                else
+                    # Error handling if librarian is not found
+                    puts "Sorry we don't have you in our system. Please register as a new hire."
+                    self.librarian_login
                 end
             when "New Hire"
                 # input name, username, password required to create Librarian instance
@@ -77,7 +84,15 @@ class Cli
                         # Go to Student interface
                         puts "Welcome back to the #{@@library.name} library #{@@student.name}!"
                         self.student_interface
+                    else
+                        # Error handling if password doesn't match
+                        puts "Password does not match our records. Please try again."
+                        self.student_login
                     end
+                else
+                    # Error handling if student is not found
+                    puts "Sorry we don't have you in our system. Please register as a new student."
+                    self.student_login
                 end
             when "New"
                 # input name, username, password
@@ -116,10 +131,12 @@ class Cli
                 puts "Awesome! #{title} has been added to the #{@@library.name} library shelves for the students to enjoy."
             when "Remove Book from Library"
                 puts "Ok, we're sorry you want to remove a book from our shelves."
-                title = @@prompt.select("What is the title of the book you would like to remove?", Book.available_books.map {|title| title})
+                title = @@prompt.select("What is the title of the book you would like to remove?", Book.available_books.map {|book| book.title})
                 @@librarian.remove_book_from_library(title)
                 puts "Sadly, this book has been removed from the library..."
             when "See Students with Book(s) Checked Out"
+                puts "The following students have books checked out: "
+                @@library.see_students_with_books
             when "Go Home for the Day"
                 puts "Ok have a great day #{@@librarian.name}!"
                 break

@@ -8,7 +8,7 @@ class Librarian < ActiveRecord::Base
 
     # permantly removes book from library database based on title (string)
     def remove_book_from_library(title)
-        Book.find_by(title: title).destroy
+        book = Book.find_by(title: title).destroy
     end
 
     def students_with_books_checked_out
