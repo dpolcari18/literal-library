@@ -11,18 +11,25 @@ class Cli
         # saves library instance that matches chosen library name above (instance)
         @@library = Library.find_by(name: library)
         # choose user type
-        user_type = @@prompt.select("Are you a librarian or a student?", %w(Librarian Student))
+        user_type = @@prompt.select("Are you a librarian or a student?", %w(Librarian Student Restart Exit Help))
         case user_type
         when "Librarian"
             self.librarian_login
         when "Student"
             self.student_login
+        when "Restart"
+            self.greet_user
+        when "Exit"
+            return
+        when "Help"
+            puts "At any time select Exit to close app or select Restart to go back to the beginning."
+            self.greet_user
         end
     end
 
     def self.librarian_login
         # Ask if new or returning librarian
-        new_returning = @@prompt.select("Are you clocking in for work or a new hire?", ["Clocking In", "New Hire"])
+        new_returning = @@prompt.select("Are you clocking in for work or a new hire?", ["Clocking In", "New Hire", "Restart", "Exit"])
             case new_returning
             when "Clocking In"
                 # Ask for username and make sure it is in system
@@ -46,6 +53,10 @@ class Cli
                 @@librarian = Librarian.create(name: name, username: username, password: password, library_id: @@library.id)
                 puts "We hope you have a great first day at the #{@@library.name} library, #{name}!"
                 self.librarian_interface
+            when "Restart"
+                self.greet_user
+            when "Exit"
+                return
             end
     end
  
@@ -53,7 +64,7 @@ class Cli
 
     def self.student_login
         # Ask if new or returning student
-        new_returning = @@prompt.select("Are you a new or returning student?", %w(New Returning))
+        new_returning = @@prompt.select("Are you a new or returning student?", ["New", "Returning", "Restart", "Exit"])
             case new_returning
             when "Returning"
                 # Ask for username and make sure it is in system
@@ -77,6 +88,10 @@ class Cli
                 @@student = Student.create(name: name, username: username, password: password, library_id: @@library.id)
                 puts "Thanks for signing up. Enjoy the #{@@library.name} library, #{name}."
                 self.student_interface
+            when "Restart"
+                self.greet_user
+            when "Exit"
+                return
             end
     end
 
