@@ -151,7 +151,11 @@ class Cli
             when "See Available Books"
                 Book.available_books.map{|book| puts book.title}
             when "Search Available Books by Author"
+                author = @@prompt.select("Here are all our authors: ", Author.all.map{|author| author.name})
+                Book.available_books.select{|book| book.author_id == Author.find_by(name: author).id}.map{|book| puts book.title}
             when "Search Available Books by Genre"
+                genre = @@prompt.select("Here are all our genres: ", Genre.all.map{|genre| genre.genre})
+                Book.available_books.select{|book| book.genre_id == Genre.find_by(genre: genre).id}.map{|book| puts book.title}
             when "Checkout Book"
                 title = @@prompt.select("Which book would you like to checkout?", Book.available_books.map{|book| book.title})
                 @@student.checkout_book(title)
