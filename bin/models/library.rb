@@ -5,8 +5,4 @@ class Library < ActiveRecord::Base
     has_many :authors, through: :books
     has_many :genres, through: :books
     has_many :checkouts, through: :books
-
-    def see_students_with_books
-        self.students.select{|student| student.books.length != 0}.map{|student| puts student.name}
-    end
 end

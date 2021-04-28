@@ -136,7 +136,7 @@ class Cli
                 puts "Sadly, this book has been removed from the library..."
             when "See Students with Book(s) Checked Out"
                 puts "The following students have books checked out: "
-                @@library.see_students_with_books
+                @@librarian.students_with_books_checked_out.map {|student| puts "#{student.name} - #{student.currently_checked_out_books.length} book(s)"}
             when "Go Home for the Day"
                 puts "Ok have a great day #{@@librarian.name}!"
                 break

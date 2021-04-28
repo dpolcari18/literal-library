@@ -12,6 +12,6 @@ class Librarian < ActiveRecord::Base
     end
 
     def students_with_books_checked_out
-        self.library.students.select {|student| student.currently_checked_out_books.length != 0}.map {|student| [student.name, student.currently_checked_out_books.length]}
+        self.library.students.select {|student| student.currently_checked_out_books.length != 0}
     end
 end
