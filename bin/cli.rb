@@ -146,15 +146,15 @@ class Cli
                 @@librarian.add_book_to_library(title, author.id, @@library.id, genre.id, pages)
                 puts "\nAwesome! #{title} has been added to the #{@@library.name} library shelves for the students to enjoy.\n"
             when "Remove Book from Library"
-                puts "Ok, we're sorry you want to remove a book from our shelves."
-                title = @@prompt.select("What is the title of the book you would like to remove?", Book.available_books.map {|book| book.title})
+                puts "\nOk, we're sorry you want to remove a book from our shelves.\n"
+                title = @@prompt.select("\nWhat is the title of the book you would like to remove?\n", Book.available_books.map {|book| book.title})
                 @@librarian.remove_book_from_library(title)
-                puts "Sadly, this book has been removed from the library..."
+                puts "\nSadly, this book has been removed from the library...\n"
             when "See Students with Book(s) Checked Out"
-                puts "The following students have books checked out: "
+                puts "\nThe following students have books checked out: \n"
                 @@librarian.students_with_books_checked_out.map {|student| puts "#{student.name} - #{student.currently_checked_out_books.length} book(s)"}
             when "Go Home for the Day"
-                puts "Ok have a great day #{@@librarian.name}!"
+                puts "\nOk have a great day #{@@librarian.name}!\n"
                 break
             end
         end
@@ -162,26 +162,35 @@ class Cli
 
     def self.student_interface
         while true
-            command = @@prompt.select("What would you like to do?", ["See Available Books", "Search Available Books by Author", "Search Available Books by Genre", "Checkout Book", "See My Books", "Return Book", "Go Home for the Day"])
+            command = @@prompt.select("\nWhat would you like to do?\n", ["See Available Books", "Search Available Books by Author", "Search Available Books by Genre", "Checkout Book", "See My Books", "Return Book", "Go Home for the Day"])
             case command
             when "See Available Books"
+                puts ''
                 Book.available_books.map{|book| puts book.title}
             when "Search Available Books by Author"
-                author = @@prompt.select("Here are all our authors: ", Author.all.map{|author| author.name})
+                author = @@prompt.select("\nHere are all our authors: \n", Author.all.map{|author| author.name})
+                puts "\nHere are all of #{author}'s books\n"
+                puts ''
                 Book.available_books.select{|book| book.author_id == Author.find_by(name: author).id}.map{|book| puts book.title}
             when "Search Available Books by Genre"
-                genre = @@prompt.select("Here are all our genres: ", Genre.all.map{|genre| genre.genre})
+                genre = @@prompt.select("\nHere are all our genres: \n", Genre.all.map{|genre| genre.genre})
+                puts "\nHere are all of our books in the #{genre} genre\n"
+                puts ''
                 Book.available_books.select{|book| book.genre_id == Genre.find_by(genre: genre).id}.map{|book| puts book.title}
             when "Checkout Book"
-                title = @@prompt.select("Which book would you like to checkout?", Book.available_books.map{|book| book.title})
+                title = @@prompt.select("\nWhich book would you like to checkout?\n", Book.available_books.map{|book| book.title})
                 @@student.checkout_book(title)
+                puts "\nEnjoy your new book!\n"
             when "See My Books"
+                puts "\nHere are your books: \n"
+                puts ''
                 @@student.books.map{|book| puts book.title}
             when "Return Book"
-                title = @@prompt.select("Which book would you like to return?", @@student.currently_checked_out_books.map {|title| title})   
+                title = @@prompt.select("\nWhich book would you like to return?\n", @@student.currently_checked_out_books.map {|title| title})   
+                puts "\nThanks for returning #{title}.\n"
                 @@student.return_book(title)
             when "Go Home for the Day"
-                puts "Thanks for visiting the library! See you next time #{@@student.name}."
+                puts "\nThanks for visiting the library! See you next time #{@@student.name}.\n"
                 break
             end
         end
